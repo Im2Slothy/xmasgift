@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mr. Frog's Christmas: GameBoy Edition</title>
+<title>Mr. Frog's Christmas: Final Edition</title>
 <link rel="icon" type="image/webp" href="img/mrfrog.webp">
 
 <style>
+    /* --- BASE STYLES (MOBILE / GAMEBOY DEFAULT) --- */
     body {
         margin: 0;
         overflow: hidden;
-        /* Game Boy Body Color */
-        background-color: #0a2e0a; 
+        background-color: #0a2e0a; /* Dark Green Plastic */
         font-family: 'Courier New', Courier, monospace;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* Start from top */
+        justify-content: flex-start;
         align-items: center;
         height: 100vh;
         width: 100vw;
@@ -24,30 +24,29 @@
         -webkit-user-select: none;
     }
 
-    /* THE SCREEN BEZEL */
+    /* The Game Boy Bezel */
     #screenBorder {
-        margin-top: 5vh; /* Space from top */
+        margin-top: 2vh;
         background: #444;
-        padding: 15px 15px 30px 15px; /* Thicker bottom bezel */
+        padding: 15px 15px 30px 15px;
         border-radius: 10px 10px 30px 10px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        width: 90vw; /* Fits phone width nicely */
+        width: 90vw;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
+        transition: all 0.5s ease; /* Smooth transition if resizing */
     }
 
-    /* THE ACTUAL GAME SCREEN */
+    /* The Screen Itself */
     #gameContainer {
         position: relative;
         background: #000;
         border: 2px solid #222;
-        
-        /* THIS FIXES THE ZOOM: */
-        width: 100%; 
+        width: 100%;
         height: auto;
-        aspect-ratio: 1024/640; /* Force Widescreen Ratio */
+        aspect-ratio: 1024/640;
     }
 
     #gameCanvas {
@@ -57,7 +56,7 @@
         height: 100%;
     }
 
-    /* GAMEBOY TEXT ON BEZEL */
+    /* Nintendo Frog Text */
     .brand-text {
         color: #888;
         font-family: sans-serif;
@@ -66,26 +65,15 @@
         align-self: flex-start;
         margin-top: 5px;
         font-size: 14px;
+        display: block;
     }
 
-    #ui {
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        color: white;
-        font-size: 16px; /* Slightly smaller for mobile screen */
-        font-weight: bold;
-        text-shadow: 2px 2px 0 #000;
-        pointer-events: none;
-        z-index: 5;
-    }
-
-    /* THE CONTROLLER AREA */
+    /* Controller Area */
     #mobileControls {
-        flex-grow: 1; /* Fill the rest of the screen */
+        flex-grow: 1;
         width: 100%;
         display: flex;
-        flex-direction: column; /* Stack D-Pad and Jump */
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 20px;
@@ -112,7 +100,6 @@
         justify-content: center;
         align-items: center;
         box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-        transition: transform 0.05s;
     }
     
     .control-btn:active {
@@ -122,52 +109,84 @@
         color: #fff;
     }
 
-    /* D-PAD Style */
-    #dpad {
-        display: flex;
-        gap: 15px;
-    }
-
-    /* Jump Button Red */
+    #dpad { display: flex; gap: 15px; }
+    
     #btnJump {
-        width: 90px;
-        height: 90px;
-        background: #8B0000;
-        border-color: #ff4444;
-        color: white;
-        font-size: 20px;
-        font-weight: bold;
+        width: 90px; height: 90px;
+        background: #8B0000; border-color: #ff4444;
+        color: white; font-size: 20px; font-weight: bold;
     }
     #btnJump:active { background: #ff0000; }
 
-    /* SCREENS */
+    /* UI Overlay Text */
+    #ui {
+        position: absolute; top: 5px; left: 5px;
+        color: white; font-size: 16px; font-weight: bold;
+        text-shadow: 2px 2px 0 #000; pointer-events: none; z-index: 5;
+    }
+
+    /* Screens (Start/Win) */
     .screen {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.85);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: #0f0;
-        text-align: center;
-        z-index: 10;
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        color: #0f0; text-align: center; z-index: 10;
     }
     h1 { font-size: 24px; margin-bottom: 10px; text-shadow: 0 0 10px #0f0; }
     p { font-size: 14px; color: white; margin-bottom: 5px; }
     button {
-        margin-top: 15px;
-        padding: 8px 16px;
-        font-size: 16px;
-        cursor: pointer;
-        background: #0f0;
-        border: 2px solid white;
-        border-radius: 5px;
-        font-weight: bold;
-        color: black;
+        margin-top: 15px; padding: 8px 16px; font-size: 16px;
+        cursor: pointer; background: #0f0; border: 2px solid white;
+        border-radius: 5px; font-weight: bold; color: black;
     }
     button:active { transform: scale(0.95); }
     #winScreen { display: none; }
+
+    /* Helper classes for text switching */
+    .pc-only { display: none; }
+    .mobile-only { display: block; }
+
+
+    /* --- PC / DESKTOP STYLES (SCREEN WIDTH > 1024px) --- */
+    @media screen and (min-width: 1024px) {
+        body {
+            /* Cinematic Background for PC */
+            background-image: url('img/bg.png');
+            background-size: cover;
+            background-position: center;
+            justify-content: center; /* Center Vertically */
+        }
+
+        /* Hide Mobile Stuff */
+        #mobileControls { display: none !important; }
+        .brand-text { display: none !important; }
+        .mobile-only { display: none !important; }
+        .pc-only { display: block !important; }
+
+        /* Transform the Bezel into a clean window */
+        #screenBorder {
+            margin: 0;
+            padding: 0;
+            background: none;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border-radius: 0;
+            width: auto; /* Let it shrink to content */
+            border: 8px solid white; /* Nice white photo frame border */
+        }
+
+        /* Make Game Big */
+        #gameContainer {
+            width: 80vw; /* 80% of screen width */
+            max-width: 1200px;
+            border: none;
+        }
+
+        h1 { font-size: 48px; }
+        p { font-size: 24px; }
+        button { padding: 15px 30px; font-size: 24px; }
+        #ui { font-size: 24px; top: 15px; left: 15px; }
+    }
 </style>
 </head>
 <body>
@@ -179,7 +198,13 @@
 
             <div id="startScreen" class="screen">
                 <h1>MR FROG'S<br>CHRISTMAS</h1>
-                <p>GAMEBOY EDITION</p>
+                
+                <p class="mobile-only">GAMEBOY EDITION</p>
+                <p class="mobile-only" style="color: #aaa;">Turn phone sideways!</p>
+                
+                <p class="pc-only">DESKTOP EDITION</p>
+                <p class="pc-only" style="color: #aaa;">Use Arrow Keys or WASD</p>
+                
                 <button onclick="startGame()">START</button>
             </div>
 
@@ -458,7 +483,7 @@
                 e.alive = false;
                 player.dy = -10; 
                 score += 500;
-                scoreEl.innerText = score;
+                // scoreEl.innerText = score; // Not needed as update() redraws UI in draw()
                 sndStomp.currentTime = 0;
                 sndStomp.play();
                 spawnParticles(e.x + e.w/2, e.y + e.h/2, 'red');
@@ -602,6 +627,7 @@
             ctx.textAlign = "start"; 
         }
         
+        // Update Score UI
         scoreEl.innerText = score;
     }
 
