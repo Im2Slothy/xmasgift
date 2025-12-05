@@ -3,19 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Merry Christmas!</title>
+<title>Mr. Frog's Christmas: GameBoy Edition</title>
 <link rel="icon" type="image/webp" href="img/mrfrog.webp">
 
 <style>
-    /* --- BASE STYLES (MOBILE / GAMEBOY DEFAULT) --- */
     body {
         margin: 0;
         overflow: hidden;
-        background-color: #0a2e0a; /* Dark Green Plastic */
+        background-color: #0a2e0a; 
         font-family: 'Courier New', Courier, monospace;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: center; 
         align-items: center;
         height: 100vh;
         width: 100vw;
@@ -24,27 +23,26 @@
         -webkit-user-select: none;
     }
 
-    /* The Game Boy Bezel */
+    /* THE SCREEN BEZEL */
     #screenBorder {
-        margin-top: 2vh;
         background: #444;
         padding: 15px 15px 30px 15px;
         border-radius: 10px 10px 30px 10px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         width: 90vw;
+        max-width: 800px; 
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
-        transition: all 0.5s ease; /* Smooth transition if resizing */
     }
 
-    /* The Screen Itself */
+    /* THE ACTUAL GAME SCREEN */
     #gameContainer {
         position: relative;
         background: #000;
         border: 2px solid #222;
-        width: 100%;
+        width: 100%; 
         height: auto;
         aspect-ratio: 1024/640;
     }
@@ -56,22 +54,40 @@
         height: 100%;
     }
 
-    /* Nintendo Frog Text */
     .brand-text {
-        color: #888;
+        color: #b30000; /* Red for Christmas */
         font-family: sans-serif;
         font-style: italic;
         font-weight: bold;
-        align-self: flex-start;
+        align-self: center; 
         margin-top: 5px;
-        font-size: 14px;
-        display: block;
+        font-size: 16px;
+        text-shadow: 0px 1px 0px #fff;
     }
 
-    /* Controller Area */
+    #ui {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        text-shadow: 2px 2px 0 #000;
+        pointer-events: none;
+        z-index: 5;
+        display: flex;
+        gap: 20px;
+    }
+    
+    #letterDisplay {
+        color: #FFD700; /* Gold */
+    }
+
+    /* CONTROLLER AREA */
     #mobileControls {
         flex-grow: 1;
         width: 100%;
+        max-width: 800px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -100,6 +116,8 @@
         justify-content: center;
         align-items: center;
         box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        transition: transform 0.05s;
+        cursor: pointer;
     }
     
     .control-btn:active {
@@ -110,111 +128,84 @@
     }
 
     #dpad { display: flex; gap: 15px; }
-    
+
     #btnJump {
-        width: 90px; height: 90px;
-        background: #8B0000; border-color: #ff4444;
-        color: white; font-size: 20px; font-weight: bold;
+        width: 90px;
+        height: 90px;
+        background: #8B0000;
+        border-color: #ff4444;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
     }
     #btnJump:active { background: #ff0000; }
 
-    /* UI Overlay Text */
-    #ui {
-        position: absolute; top: 5px; left: 5px;
-        color: white; font-size: 16px; font-weight: bold;
-        text-shadow: 2px 2px 0 #000; pointer-events: none; z-index: 5;
-    }
-
-    /* Screens (Start/Win) */
+    /* SCREENS */
     .screen {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.85);
-        display: flex; flex-direction: column;
-        justify-content: center; align-items: center;
-        color: #0f0; text-align: center; z-index: 10;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #0f0;
+        text-align: center;
+        z-index: 10;
     }
     h1 { font-size: 24px; margin-bottom: 10px; text-shadow: 0 0 10px #0f0; }
     p { font-size: 14px; color: white; margin-bottom: 5px; }
     button {
-        margin-top: 15px; padding: 8px 16px; font-size: 16px;
-        cursor: pointer; background: #0f0; border: 2px solid white;
-        border-radius: 5px; font-weight: bold; color: black;
+        margin-top: 15px;
+        padding: 8px 16px;
+        font-size: 16px;
+        cursor: pointer;
+        background: #0f0;
+        border: 2px solid white;
+        border-radius: 5px;
+        font-weight: bold;
+        color: black;
     }
     button:active { transform: scale(0.95); }
+    
     #winScreen { display: none; }
-
-    /* Helper classes for text switching */
-    .pc-only { display: none; }
-    .mobile-only { display: block; }
-
-
-    /* --- PC / DESKTOP STYLES (SCREEN WIDTH > 1024px) --- */
-    @media screen and (min-width: 1024px) {
-        body {
-            /* Cinematic Background for PC */
-            background-image: url('img/bg.png');
-            background-size: cover;
-            background-position: center;
-            justify-content: center; /* Center Vertically */
-        }
-
-        /* Hide Mobile Stuff */
-        #mobileControls { display: none !important; }
-        .brand-text { display: none !important; }
-        .mobile-only { display: none !important; }
-        .pc-only { display: block !important; }
-
-        /* Transform the Bezel into a clean window */
-        #screenBorder {
-            margin: 0;
-            padding: 0;
-            background: none;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            border-radius: 0;
-            width: auto; /* Let it shrink to content */
-            border: 8px solid white; /* Nice white photo frame border */
-        }
-
-        /* Make Game Big */
-        #gameContainer {
-            width: 80vw; /* 80% of screen width */
-            max-width: 1200px;
-            border: none;
-        }
-
-        h1 { font-size: 48px; }
-        p { font-size: 24px; }
-        button { padding: 15px 30px; font-size: 24px; }
-        #ui { font-size: 24px; top: 15px; left: 15px; }
-    }
+    #gameOverScreen { display: none; }
+    
+    .hidden { display: none; }
 </style>
 </head>
 <body>
 
     <div id="screenBorder">
         <div id="gameContainer">
-            <div id="ui">SCORE: <span id="scoreVal">0</span></div>
+            <div id="ui">
+                <div>SCORE: <span id="scoreVal">0</span></div>
+                <div>LIVES: <span id="livesVal">3</span></div>
+                <div id="letterDisplay">LETTERS: <span id="collectedLetters">_ _ _ _ _ _</span></div>
+            </div>
             <canvas id="gameCanvas" width="1024" height="640"></canvas>
 
             <div id="startScreen" class="screen">
                 <h1>MR FROG'S<br>CHRISTMAS</h1>
-                
-                <p class="mobile-only">Have fun!</p>
-                
-                <p class="pc-only">Have fun!</p>
-                <p class="pc-only" style="color: #aaa;">Use Arrow Keys or WASD</p>
-                
+                <p>GAMEBOY EDITION</p>
                 <button onclick="startGame()">START</button>
             </div>
 
             <div id="winScreen" class="screen">
                 <h1>YOU WON!</h1>
                 <p>Score: <span id="finalScore">0</span></p>
-                <p>❤️ Merry Christmas Maizie! ❤️</p>
-                <button onclick="location.reload()">AGAIN</button>
+                <p>Merry Christmas Maizie!</p>
+                <p id="secretMessage" style="color: gold; font-weight: bold; margin-top: 10px;"></p>
+                <button onclick="location.reload()">PLAY AGAIN</button>
+            </div>
+
+            <div id="gameOverScreen" class="screen">
+                <h1 style="color: red; text-shadow: 0 0 10px red;">GAME OVER</h1>
+                <p>Don't give up!</p>
+                <button onclick="location.reload()">TRY AGAIN</button>
             </div>
         </div>
-        <div class="brand-text">🎅 Merry Christmas 🎅</div>
+        <div class="brand-text">MERRY CHRISTMAS</div>
     </div>
 
     <div id="mobileControls">
@@ -231,11 +222,20 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const scoreEl = document.getElementById('scoreVal');
+    const livesEl = document.getElementById('livesVal');
+    const lettersEl = document.getElementById('collectedLetters');
     
     // --- AUDIO ---
     const sndIntro = new Audio('audio/intro.mp3'); 
     const sndEat = new Audio('audio/eat.mp3');     
-    const sndStomp = new Audio('audio/stomp.mp3'); 
+    const sndStomp = new Audio('audio/stomp.mp3');
+    
+    // NEW: Sound specifically for letters
+    const sndLetter = new Audio('audio/letter.mp3');
+
+    const sndMusic = new Audio('audio/bgm.mp3'); 
+    sndMusic.loop = true;
+    sndMusic.volume = 0.1; 
 
     // --- IMAGES ---
     const bgImage = new Image();     bgImage.src = 'img/bg.png';
@@ -251,8 +251,20 @@
     // --- GAME STATE ---
     let gameRunning = false;
     let score = 0;
+    let lives = 3; 
     let cameraX = 0;
     
+    // MAIZIE CHALLENGE
+    // "M" - "A" - "I" - "Z" - "I" - "E"
+    let letters = [
+        { char: "M", x: 600, y: 400, collected: false },
+        { char: "A", x: 1450, y: 300, collected: false },
+        { char: "I", x: 2800, y: 50, collected: false }, // High up!
+        { char: "Z", x: 3800, y: 350, collected: false },
+        { char: "I", x: 5350, y: 560, collected: false }, // On safety platform
+        { char: "E", x: 6300, y: 250, collected: false }
+    ];
+
     // CHECKPOINT
     let checkpointActive = false;
     let checkpointTimer = 0;
@@ -270,15 +282,18 @@
 
     const gravity = 0.7; 
     const friction = 0.85;
+    let coyoteTimer = 0; 
+
+    // --- FPS CONTROL ---
+    let lastTime = 0;
+    const fps = 60;
+    const frameDelay = 1000 / fps;
 
     // --- INPUT HANDLING ---
     const keys = [];
-
-    // Keyboard
     window.addEventListener('keydown', e => handleInput(e.code, true));
     window.addEventListener('keyup', e => handleInput(e.code, false));
 
-    // Touch
     const btnLeft = document.getElementById('btnLeft');
     const btnRight = document.getElementById('btnRight');
     const btnJump = document.getElementById('btnJump');
@@ -286,6 +301,8 @@
     function addTouchHandler(element, code) {
         element.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(code, true); });
         element.addEventListener('touchend', (e) => { e.preventDefault(); handleInput(code, false); });
+        element.addEventListener('mousedown', (e) => { e.preventDefault(); handleInput(code, true); });
+        element.addEventListener('mouseup', (e) => { e.preventDefault(); handleInput(code, false); });
     }
 
     addTouchHandler(btnLeft, 'ArrowLeft');
@@ -295,10 +312,12 @@
     function handleInput(code, isPressed) {
         keys[code] = isPressed;
         if (isPressed && (code === 'ArrowUp' || code === 'KeyW' || code === 'Space')) {
-            if (player.grounded) {
+            if (player.grounded || coyoteTimer > 0) {
                 player.dy = player.jumpPower;
                 player.grounded = false;
+                coyoteTimer = 0; 
                 player.jumpCount = 1;
+                spawnParticles(player.x + 25, player.y + 50, 'white');
             } else if (player.jumpCount < player.maxJumps) {
                 player.dy = player.jumpPower; 
                 player.jumpCount++;
@@ -333,41 +352,52 @@
     function spawnParticles(x, y, color) {
         for(let i=0; i<15; i++) particles.push(new Particle(x, y, color));
     }
-
-    // --- SNOWFLAKES ---
-    let snow = [];
-    for(let i=0; i<100; i++) {
-        snow.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: Math.random() * 3 + 1,
-            speed: Math.random() * 2 + 1
-        });
+    
+    // NEW: Confetti specifically for Winning
+    function explodeConfetti(x, y) {
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff'];
+        for(let i=0; i<100; i++) {
+            let color = colors[Math.floor(Math.random() * colors.length)];
+            let p = new Particle(x, y, color);
+            p.dx = (Math.random() - 0.5) * 20; // Faster explosion
+            p.dy = (Math.random() - 0.5) * 20;
+            p.life = 2.0; // Lasts longer
+            particles.push(p);
+        }
     }
 
     // --- LEVEL DESIGN ---
+    // Extended map for letter placement
     let platforms = [
         {x: 0, y: 600, w: 800, h: 40}, 
         {x: 300, y: 450, w: 100, h: 20},
-        {x: 500, y: 350, w: 100, h: 20},
+        {x: 500, y: 350, w: 100, h: 20}, // Letter M area
+        
         {x: 800, y: 400, w: 120, h: 20, moving: true, type: 'h', range: 200, speed: 2, startX: 800},
         {x: 1100, y: 400, w: 100, h: 20}, 
-        {x: 1300, y: 550, w: 400, h: 20}, 
+        {x: 1300, y: 550, w: 400, h: 20},
+        
+        {x: 1400, y: 350, w: 100, h: 20}, // New platform for Letter A
+        
         {x: 1800, y: 550, w: 150, h: 20}, 
         {x: 2000, y: 450, w: 100, h: 20},
         {x: 2150, y: 350, w: 100, h: 20},
         {x: 2300, y: 250, w: 200, h: 20}, 
         {x: 2550, y: 500, w: 120, h: 20, moving: true, type: 'v', range: 400, speed: 3, startY: 500},
-        {x: 2700, y: 100, w: 200, h: 20}, 
+        
+        {x: 2750, y: 100, w: 100, h: 20}, // New high platform for Letter I
+        
         {x: 3000, y: 100, w: 100, h: 20, moving: true, type: 'h', range: 150, speed: 3, startX: 3000},
         {x: 3300, y: 150, w: 150, h: 20}, 
         {x: 3600, y: 250, w: 100, h: 20}, 
-        {x: 3800, y: 400, w: 100, h: 20},
+        {x: 3800, y: 400, w: 100, h: 20}, // Letter Z area
         {x: 4000, y: 500, w: 100, h: 20},
         {x: 4200, y: 600, w: 500, h: 40}, 
         {x: 4800, y: 500, w: 100, h: 20},
         {x: 5000, y: 400, w: 100, h: 20},
         {x: 5200, y: 500, w: 100, h: 20, moving: true, type: 'h', range: 200, speed: 4, startX: 5200},
+        
+        {x: 5300, y: 620, w: 150, h: 20}, // Safety platform (Letter I here)
         {x: 5600, y: 350, w: 100, h: 20},
         {x: 5900, y: 250, w: 100, h: 20},
         {x: 6100, y: 400, w: 800, h: 40}, 
@@ -382,7 +412,6 @@
     let enemies = [
         {x: 600, y: 550, w: 40, h: 40, dx: 2, speed: 2, alive: true, minX: 550, maxX: 750},
         {x: 1350, y: 510, w: 40, h: 40, dx: 3, speed: 3, alive: true, minX: 1300, maxX: 1600},
-        {x: 2700, y: 60, w: 40, h: 40, dx: 2, speed: 2, alive: true, minX: 2700, maxX: 2850},
         {x: 4200, y: 560, w: 40, h: 40, dx: 5, speed: 5, alive: true, minX: 4200, maxX: 4600},
         {x: 6200, y: 360, w: 40, h: 40, dx: 6, speed: 6, alive: true, minX: 6100, maxX: 6500}
     ];
@@ -390,23 +419,42 @@
     let bugs = [
         {x: 330, y: 410, w: 30, h: 30, collected: false},
         {x: 950, y: 350, w: 30, h: 30, collected: false},
-        {x: 1450, y: 450, w: 30, h: 30, collected: false},
         {x: 2330, y: 210, w: 30, h: 30, collected: false},
-        {x: 2530, y: 200, w: 30, h: 30, collected: false},
-        {x: 3350, y: 110, w: 30, h: 30, collected: false},
+        {x: 3680, y: 300, w: 30, h: 30, collected: false},
+        {x: 3730, y: 350, w: 30, h: 30, collected: false},
         {x: 4530, y: 460, w: 30, h: 30, collected: false},
         {x: 5020, y: 360, w: 30, h: 30, collected: false},
-        {x: 6300, y: 360, w: 30, h: 30, collected: false},
     ];
 
     let goal = {x: 6600, y: 300, w: 100, h: 100, startY: 300, speed: 2, dy: 2}; 
 
+    // --- SNOWFLAKES ---
+    let snow = [];
+    for(let i=0; i<100; i++) {
+        snow.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 3 + 1,
+            speed: Math.random() * 2 + 1
+        });
+    }
+
     function startGame() {
         document.getElementById('startScreen').style.display = 'none';
         gameRunning = true;
+        
+        // 1. Play Intro
         sndIntro.volume = 0.5;
         sndIntro.play().catch(e => console.log("Audio issue:", e));
-        loop();
+        
+        // 2. Queue Music to start after 6 seconds
+        setTimeout(() => {
+            if(gameRunning) {
+                sndMusic.play().catch(e => console.log("Music issue:", e));
+            }
+        }, 6000); 
+
+        requestAnimationFrame(loop);
     }
 
     function update() {
@@ -419,6 +467,7 @@
         goal.y += goal.dy;
         if (goal.y > goal.startY + 100 || goal.y < goal.startY - 100) goal.dy *= -1;
 
+        // Platform Movement
         for (let p of platforms) {
             if (p.moving) {
                 if (p.type === 'h') {
@@ -439,6 +488,7 @@
             }
         }
 
+        // Player Movement
         if (keys['ArrowRight'] || keys['KeyD']) {
             player.dx = player.speed;
             player.facingRight = true;
@@ -452,6 +502,7 @@
         player.x += player.dx;
         player.y += player.dy;
 
+        // Collision: Platforms
         player.grounded = false;
         for (let p of platforms) {
             let dir = colCheck(player, p);
@@ -459,18 +510,23 @@
                 player.grounded = true;
                 player.jumpCount = 0; 
                 player.dy = 0;
+                coyoteTimer = 10; 
             } else if (dir === "t") {
                 player.dy = 0; 
             }
         }
+        if (!player.grounded && coyoteTimer > 0) coyoteTimer--;
 
+        // Collision: Spikes
         for (let s of spikes) {
             if (player.x + player.width > s.x + 5 && player.x < s.x + 25 &&
                 player.y + player.height > s.y + 10 && player.y < s.y + 30) {
+                if (navigator.vibrate) navigator.vibrate(200);
                 resetPlayer();
             }
         }
 
+        // Collision: Enemies
         for (let e of enemies) {
             if (!e.alive) continue;
             e.x += e.dx;
@@ -482,15 +538,18 @@
                 e.alive = false;
                 player.dy = -10; 
                 score += 500;
-                // scoreEl.innerText = score; // Not needed as update() redraws UI in draw()
+                scoreEl.innerText = score;
                 sndStomp.currentTime = 0;
                 sndStomp.play();
                 spawnParticles(e.x + e.w/2, e.y + e.h/2, 'red');
+                if (navigator.vibrate) navigator.vibrate(50);
             } else if (dir === "t" || dir === "l" || dir === "r") {
+                if (navigator.vibrate) navigator.vibrate(200);
                 resetPlayer();
             }
         }
 
+        // Collision: Bugs
         for (let b of bugs) {
             if (!b.collected && colCheck(player, b)) {
                 b.collected = true;
@@ -498,19 +557,46 @@
                 sndEat.currentTime = 0;
                 sndEat.play();
                 spawnParticles(b.x + b.w/2, b.y + b.h/2, 'violet');
-            }
-        }
-        
-        if (!checkpointActive) {
-            if(colCheck(player, checkpoint)) {
-                   checkpointActive = true;
-                   checkpointTimer = 180; 
-                   let cpSound = new Audio('audio/eat.mp3');
-                   cpSound.volume = 0.5;
-                   cpSound.play();
+                if (navigator.vibrate) navigator.vibrate(30);
             }
         }
 
+        // Collision: Letters (UPDATED SOUND)
+        for (let l of letters) {
+            if (!l.collected && 
+                player.x < l.x + 40 && player.x + player.width > l.x &&
+                player.y < l.y + 40 && player.y + player.height > l.y) {
+                
+                l.collected = true;
+                score += 1000;
+                
+                // FIX: Play letter.mp3 instead of eat.mp3
+                sndLetter.currentTime = 0;
+                sndLetter.play();
+                
+                spawnParticles(l.x, l.y, 'gold');
+                updateLetterDisplay();
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            }
+        }
+        
+        // Checkpoint + EXTRA LIFE
+        if (!checkpointActive) {
+            if(colCheck(player, checkpoint)) {
+                   checkpointActive = true;
+                   checkpointTimer = 180;
+                   
+                   lives++;
+                   livesEl.innerText = lives;
+
+                   let cpSound = new Audio('audio/eat.mp3');
+                   cpSound.volume = 0.5;
+                   cpSound.play();
+                   spawnParticles(checkpoint.x + 30, checkpoint.y + 30, '#0f0');
+            }
+        }
+
+        // Camera
         let targetCamX = player.x - canvas.width / 3;
         if (targetCamX < 0) targetCamX = 0;
         if (targetCamX > 7000 - canvas.width) targetCamX = 7000 - canvas.width;
@@ -518,6 +604,14 @@
 
         if (player.y > canvas.height + 200) resetPlayer();
         if (colCheck(player, goal)) gameWin();
+    }
+
+    function updateLetterDisplay() {
+        let str = "";
+        letters.forEach(l => {
+            str += l.collected ? l.char + " " : "_ ";
+        });
+        lettersEl.innerText = str;
     }
 
     function draw() {
@@ -574,6 +668,19 @@
             if (!b.collected) ctx.drawImage(bugImg, b.x, b.y, b.w, b.h);
         }
 
+        // Draw Letters
+        ctx.font = "bold 40px Courier New";
+        ctx.fillStyle = "gold";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        for (let l of letters) {
+            if (!l.collected) {
+                let bob = Math.sin(Date.now() / 200) * 5;
+                ctx.fillText(l.char, l.x, l.y + bob);
+                ctx.strokeText(l.char, l.x, l.y + bob);
+            }
+        }
+
         for (let e of enemies) {
             if (e.alive) {
                 ctx.save();
@@ -622,29 +729,48 @@
             ctx.fillStyle = "#0f0";
             ctx.font = "bold 48px Courier New";
             ctx.textAlign = "center";
-            ctx.fillText("PROGRESS SAVED!", canvas.width/2, canvas.height/2 + 15);
+            ctx.fillText("PROGRESS SAVED! +1 LIFE", canvas.width/2, canvas.height/2 + 15);
             ctx.textAlign = "start"; 
         }
         
-        // Update Score UI
         scoreEl.innerText = score;
     }
 
     function resetPlayer() {
-        if (checkpointActive) {
-            player.x = checkpoint.x;
-            player.y = checkpoint.y - 20; 
+        lives--;
+        livesEl.innerText = lives;
+
+        if (lives <= 0) {
+            gameRunning = false;
+            sndMusic.pause();
+            document.getElementById('gameOverScreen').style.display = 'flex';
         } else {
-            player.x = 100;
-            player.y = 300;
+            if (checkpointActive) {
+                player.x = checkpoint.x;
+                player.y = checkpoint.y - 20; 
+            } else {
+                player.x = 100;
+                player.y = 300;
+            }
+            player.dx = 0; player.dy = 0;
+            score = Math.max(0, score - 200);
         }
-        player.dx = 0; player.dy = 0;
-        score = Math.max(0, score - 200);
     }
 
     function gameWin() {
         gameRunning = false;
         document.getElementById('finalScore').innerText = score;
+        
+        // NEW: Trigger Confetti on Win!
+        explodeConfetti(player.x, player.y);
+
+        let allCollected = letters.every(l => l.collected);
+        if (allCollected) {
+            document.getElementById('secretMessage').innerText = "♥ I LOVE YOU! ♥";
+        } else {
+            document.getElementById('secretMessage').innerText = "Collect all letters for a secret!";
+        }
+
         document.getElementById('winScreen').style.display = 'flex';
     }
 
@@ -668,13 +794,19 @@
         return colDir;
     }
 
-    function loop() {
+    function loop(timestamp) {
         if (!gameRunning) return;
-        update();
-        draw();
         requestAnimationFrame(loop);
+
+        if (!lastTime) lastTime = timestamp;
+        let elapsed = timestamp - lastTime;
+
+        if (elapsed > frameDelay) {
+            lastTime = timestamp - (elapsed % frameDelay);
+            update();
+            draw();
+        }
     }
 </script>
 </body>
 </html>
-
